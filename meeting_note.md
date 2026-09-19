@@ -1,6 +1,15 @@
 # 19/9/2026
-+ Task completed:
-+ Who:
-+ Working:
-+ Roadblocks:
-+ Plan for next day:
+
+## Bách Nhật Khoa
+
++ Task completed:DONE
++ Working:Bàn kế hoạch, cập nhập README
++ Roadblocks:NONE
++ Plan for next day: NONE
+
+## Phạm Đình Kiên
++ Task completed:DONE
++ Working: Đưa ra hướng phát triển
++ Roadblocks:NONE
++ Plan for next day:NONE
+
