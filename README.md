@@ -123,7 +123,6 @@ Ví dụ:
 ## 7. Phạm vi
 
 Hệ thống tập trung vào các hoạt động quản lý và vận hành cơ bản của phòng Gym.
-
 Các chức năng nâng cao như thanh toán trực tuyến, quản lý kho, chấm công nhân viên, tính lương hoặc ứng dụng di động không nằm trong phạm vi chính của đề tài.
 
 ## 8. Tài liệu dự án
