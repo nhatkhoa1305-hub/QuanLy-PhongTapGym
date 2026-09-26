@@ -40,6 +40,45 @@
 + Working:
   - NONE
 
+---
+
+# 26/9/2026
+
+## Bách Nhật Khoa
+
++ Task completed:
+  - NONE
++ Working:
+  - NONE
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - NONE
+
+## Phạm Đình Kiên
+
++ Task completed:
+  - NONE
+
++ Working:
+  - NONE
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - NONE
+ 
+## Nguyễn Ngọc Linh
+
++ Task completed:
+  - NONE
+
++ Working:
+  - NONE
+
 + Roadblocks:
   - NONE
 
