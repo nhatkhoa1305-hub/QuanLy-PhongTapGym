@@ -52,10 +52,11 @@
 ## Nguyễn Ngọc Linh
 
 + Task completed:
-  - NONE
+  - Vẽ sơ đồ
 
 + Working:
-  - Vẽ sơ đồ
+  - NONE
+
 + Roadblocks:
   - NONE
 
