@@ -77,8 +77,7 @@
   - NONE
 
 + Working:
-  - NONE
-
+  - Vẽ sơ đồ
 + Roadblocks:
   - NONE
 
