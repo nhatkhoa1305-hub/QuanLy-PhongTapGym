@@ -31,14 +31,6 @@
 
 + Plan for next day:
   - Tiếp tục tìm hiểu và xác định các yêu cầu của hệ thống.
- 
-## Nguyễn Ngọc Linh
-
-+ Task completed:
-  - NONE
-
-+ Working:
-  - NONE
 
 ---
 
@@ -47,7 +39,7 @@
 ## Bách Nhật Khoa
 
 + Task completed:
-  - NONE
+  - Thảo luận và phân công nhiệm vụ
 + Working:
   - NONE
 
@@ -55,22 +47,8 @@
   - NONE
 
 + Plan for next day:
-  - NONE
+  - Tiếp tục tìm hiểu và xác định các yêu cầu của hệ thống.
 
-## Phạm Đình Kiên
-
-+ Task completed:
-  - NONE
-
-+ Working:
-  - NONE
-
-+ Roadblocks:
-  - NONE
-
-+ Plan for next day:
-  - NONE
- 
 ## Nguyễn Ngọc Linh
 
 + Task completed:
@@ -82,4 +60,4 @@
   - NONE
 
 + Plan for next day:
-  - NONE
+  - Tiếp tục tìm hiểu và xác định các yêu cầu của hệ thống.
