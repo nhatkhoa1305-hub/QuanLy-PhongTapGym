@@ -31,3 +31,17 @@
 
 + Plan for next day:
   - Tiếp tục tìm hiểu và xác định các yêu cầu của hệ thống.
+ 
+## Phạm Đình Kiên
+
++ Task completed:
+  - NONE
+
++ Working:
+  - NONE
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - NONE
