@@ -32,7 +32,7 @@
 + Plan for next day:
   - Tiếp tục tìm hiểu và xác định các yêu cầu của hệ thống.
  
-## Phạm Đình Kiên
+## Nguyễn Ngọc Linh
 
 + Task completed:
   - NONE
