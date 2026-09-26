@@ -3,7 +3,7 @@
 ## Họ tên và MSSV:
 1. Bách Nhật Khoa - 2506022023
 2. Phạm Đình Kiên - 2506022020
-
+3. Nguyễn Ngọc Linh - 2406042003
 ## 1. Giới thiệu đề tài
 
 Hệ thống quản lý phòng tập Gym được xây dựng nhằm hỗ trợ quản lý các hoạt động cơ bản của một phòng tập, bao gồm quản lý hội viên, gói dịch vụ, lớp tập, huấn luyện viên và đăng ký dịch vụ.
