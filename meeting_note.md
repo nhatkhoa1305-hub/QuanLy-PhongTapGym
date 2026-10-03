@@ -62,3 +62,37 @@
 
 + Plan for next day:
   - Tiếp tục tìm hiểu và xác định các yêu cầu của hệ thống.
+ 
+---
+
+# 3/10/2026
+
+## Bách Nhật Khoa
+
++ Task completed:
+  - docs
+
++ Working:
+  - user_stories
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - Chỉnh sữa user_stories
+
+## Phạm Đình Kiên
+
++ Task completed:
+  - SRS_QLGym.md
+
++ Working:
+  - user_stories
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - Dùng AI thiết kế trang chủ
+
+---
