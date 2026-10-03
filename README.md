@@ -130,7 +130,8 @@ Các chức năng nâng cao như thanh toán trực tuyến, quản lý kho, ch�
 
 Các tài liệu phân tích và thiết kế hệ thống sẽ được cập nhật trong quá trình thực hiện dự án.
 
-- Phân tích yêu cầu
+- [docs/feature_tracking.md](docs/feature_tracking.md) - Theo dõi tính năng chính của dự án
+- [user_stories/README.md](user_stories/README.md) - User stories theo vai trò người dùng
 - Use Case
 - Activity Diagram
 - Sequence Diagram
