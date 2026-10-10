@@ -102,21 +102,21 @@
 ## Bách Nhật Khoa
 
 + Task completed:
-  - 
+  - NONE
 
 + Working:
-  - 
+  - user_stories
 
 + Roadblocks:
   - NONE
 
 + Plan for next day:
-  - 
+  - Chỉnh sữa user_stories
 
 ## Phạm Đình Kiên
 
 + Task completed:
-  - 
+  - NONE
 
 + Working:
   - Figma
@@ -125,6 +125,20 @@
   - NONE
 
 + Plan for next day:
-  - 
+  - NONE
+
+## Nguyễn Ngọc Linh
+
++ Task completed:
+  - NONE
+
++ Working:
+  - Thảo luận bài làm
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - NONE
 
 ---
