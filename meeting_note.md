@@ -96,3 +96,35 @@
   - Dùng AI thiết kế trang chủ
 
 ---
+
+# 10/10/2026
+
+## Bách Nhật Khoa
+
++ Task completed:
+  - 
+
++ Working:
+  - 
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - 
+
+## Phạm Đình Kiên
+
++ Task completed:
+  - 
+
++ Working:
+  - Figma
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - 
+
+---
