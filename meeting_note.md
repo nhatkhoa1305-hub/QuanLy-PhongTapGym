@@ -161,3 +161,22 @@
   - NONE
 
 ---
+
+# 17/10/2026
+
+## Bách Nhật Khoa
+
++ Task completed:
+  - user-stories
+  - web (điều chỉnh lại)
+
++ Working:
+  - Thảo luận bài làm
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - NONE
+
+---
