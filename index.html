@@ -21,13 +21,16 @@
         </div>
 
         <nav class="nav-menu">
-          <button class="nav-item active">Tổng quan</button>
-          <button class="nav-item">Hội viên</button>
-          <button class="nav-item">Gói dịch vụ</button>
-          <button class="nav-item">Lớp tập</button>
-          <button class="nav-item">Huấn luyện viên</button>
-          <button class="nav-item">Báo cáo</button>
-          <button class="nav-item">Phân quyền</button>
+          <button class="nav-item active" data-view="dashboard">Tổng quan</button>
+          <button class="nav-item" data-view="members">Hội viên</button>
+          <button class="nav-item" data-view="packages">Gói dịch vụ</button>
+          <button class="nav-item" data-view="subscriptions">Gói hội viên</button>
+          <button class="nav-item" data-view="classes">Lớp tập</button>
+          <button class="nav-item" data-view="trainers">Huấn luyện viên</button>
+          <button class="nav-item" data-view="registrations">Đăng ký lớp</button>
+          <button class="nav-item" data-view="history">Lịch sử hội viên</button>
+          <button class="nav-item" data-view="reports">Báo cáo</button>
+          <button class="nav-item" data-view="users">Phân quyền</button>
         </nav>
 
         <div class="sidebar-card">
@@ -41,127 +44,12 @@
       </aside>
 
       <main class="content">
-        <header class="topbar">
-          <div>
-            <p class="eyebrow">Hệ thống quản lý phòng tập</p>
-            <h2>Dashboard điều hành</h2>
-          </div>
-
-          <div class="topbar-actions">
-            <div class="search-box">
-              <span>⌕</span>
-              <input type="text" placeholder="Tìm kiếm nhanh" />
-            </div>
-            <button class="primary-btn">+ Tạo mới</button>
-          </div>
-        </header>
-
-        <section class="stats-grid" id="statsGrid"></section>
-
-        <section class="panel panel-wide">
-          <div class="panel-header">
-            <div>
-              <p class="mini-label">Coverage</p>
-              <h3>User Stories theo module</h3>
-            </div>
-            <button class="secondary-btn">Xem tất cả</button>
-          </div>
-          <div id="storyGrid" class="story-grid"></div>
-        </section>
-
-        <section class="two-column-grid">
-          <div class="panel">
-            <div class="panel-header">
-              <div>
-                <p class="mini-label">Master Data</p>
-                <h3>Quản lý hội viên</h3>
-              </div>
-            </div>
-
-            <form class="data-form" id="memberForm">
-              <div class="input-grid">
-                <label>
-                  <span>Mã hội viên</span>
-                  <input type="text" value="HV00012" />
-                </label>
-                <label>
-                  <span>Họ tên</span>
-                  <input type="text" value="Nguyễn Minh Anh" />
-                </label>
-                <label>
-                  <span>Số điện thoại</span>
-                  <input type="text" value="0912 345 678" />
-                </label>
-                <label>
-                  <span>Gói hiện tại</span>
-                  <select>
-                    <option>Premium 12 tháng</option>
-                    <option>Gold 6 tháng</option>
-                    <option>Basic 1 tháng</option>
-                  </select>
-                </label>
-              </div>
-              <button type="button" class="primary-btn">Lưu thông tin</button>
-            </form>
-          </div>
-
-          <div class="panel">
-            <div class="panel-header">
-              <div>
-                <p class="mini-label">Membership</p>
-                <h3>Gói dịch vụ đang áp dụng</h3>
-              </div>
-            </div>
-
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Mã gói</th>
-                  <th>Tên gói</th>
-                  <th>Giá</th>
-                  <th>Hiệu lực</th>
-                </tr>
-              </thead>
-              <tbody id="packageTable"></tbody>
-            </table>
-          </div>
-        </section>
-
-        <section class="two-column-grid">
-          <div class="panel">
-            <div class="panel-header">
-              <div>
-                <p class="mini-label">Classes</p>
-                <h3>Lớp tập sắp diễn ra</h3>
-              </div>
-            </div>
-
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Lớp</th>
-                  <th>Huấn luyện viên</th>
-                  <th>Thời gian</th>
-                  <th>Sức chứa</th>
-                </tr>
-              </thead>
-              <tbody id="classTable"></tbody>
-            </table>
-          </div>
-
-          <div class="panel">
-            <div class="panel-header">
-              <div>
-                <p class="mini-label">Reports</p>
-                <h3>Báo cáo sức chứa lớp</h3>
-              </div>
-            </div>
-
-            <div id="reportBars" class="report-bars"></div>
-          </div>
-        </section>
+        <header class="topbar" id="topbar"></header>
+        <section id="appView" aria-live="polite"></section>
       </main>
     </div>
+
+    <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
 
     <script src="app.js"></script>
   </body>
