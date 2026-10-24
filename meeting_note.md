@@ -185,8 +185,8 @@
 ## Phạm Đình Kiên
 
 + Task completed:
-  -Thiết kế sơ đồ database (erd)
-
+  - Thiết kế sơ đồ database (ERD)
+    
 + Working:
   - Refactoring
 
