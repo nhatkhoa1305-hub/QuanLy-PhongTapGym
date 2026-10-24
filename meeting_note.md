@@ -185,10 +185,10 @@
 ## Phạm Đình Kiên
 
 + Task completed:
-  - Refactoring
+  -Thiết kế sơ đồ database (erd)
 
 + Working:
-  - Thiết kế sơ đồ database (erd)
+  - Refactoring
 
 + Roadblocks:
   - NONE
