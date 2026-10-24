@@ -180,3 +180,18 @@
   - NONE
 
 ---
+# 24/10/2026
+
+## Phạm Đình Kiên
+
++ Task completed:
+  - Refactoring
+
++ Working:
+  - Thiết kế sơ đồ database (erd)
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - Thiết kế,hoàn thiện lại giao diện tổng
