@@ -195,3 +195,19 @@
 
 + Plan for next day:
   - Thiết kế,hoàn thiện lại giao diện tổng
+
+## Bách Nhật Khoa
+
++ Task completed:
+  - NONE
+
++ Working:
+  - database
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - NONE
+
+---
