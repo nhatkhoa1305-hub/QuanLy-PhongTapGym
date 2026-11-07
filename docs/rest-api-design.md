@@ -1,40 +1,48 @@
 # Thiết kế REST API - Hệ thống QLGym
 
-**Phiên bản:** Bản nháp 1.0  
-**Căn cứ:** `SRS_QLGym.md`  
+**Phiên bản:** Bản nháp 2.0 (Hoàn thiện chi tiết nghiệp vụ)
+**Căn cứ:** `SRS_QLGym.md`
 **Phạm vi:** API phục vụ các client của hệ thống quản lý phòng tập. Đây là thiết kế giao tiếp, chưa phải backend đã triển khai.
+
+## Mục lục
+
+1. [Kiến trúc](#1-kiến-trúc)
+2. [Quy ước chung](#2-quy-ước-chung)
+3. [Danh sách Endpoint chi tiết](#3-danh-sách-endpoint-chi-tiết)
+4. [Bảng mã lỗi nghiệp vụ chuẩn hóa](#4-bảng-mã-lỗi-nghiệp-vụ-chuẩn-hóa-error-codes)
+5. [Ghi chú kỹ thuật cho việc triển khai](#5-các-điểm-ghi-chú-kỹ-thuật-cho-việc-triển-khai-implementation-notes)
+
+---
 
 ## 1. Kiến trúc
 
-```text
+```plaintext
 [Web UI: Quản lý / Lễ tân / HLV / Hội viên]
                      |
-                     | HTTPS, JSON
+                     | HTTPS, JSON (Authorization: Bearer <token>)
                      v
              [REST API / Business Logic]
                      |
                      v
-                 [Database]
+                 [Database (MySQL/PostgreSQL)]
 ```
 
-Giao diện gọi API; backend xác thực, phân quyền, kiểm tra quy tắc nghiệp vụ và đọc/ghi cơ sở dữ liệu. Trình duyệt không truy cập trực tiếp database.
+- **Nguyên tắc:** Trình duyệt không truy cập trực tiếp database. Backend đảm nhiệm xác thực, phân quyền, kiểm tra quy tắc nghiệp vụ (Business Rules) và quản lý Database Transactions.
+- **Phiên bản hóa:** Các thay đổi không tương thích ngược với contract hiện tại cần được phát hành dưới phiên bản API mới (`/api/v2`).
 
-Giao diện web hiện tại là bản tạm và được giữ nguyên trong phạm vi thiết kế API này. API được xác định theo nghiệp vụ trong SRS, không theo cấu trúc màn hình hiện tại. Sau này, nếu triển khai hoặc tích hợp API đòi hỏi giao diện gọi endpoint hay thay đổi chức năng, chỉ cập nhật những phần web liên quan khi cần; nếu không liên quan thì giữ nguyên giao diện hiện tại. Thay đổi không tương thích ngược với contract cần được quản lý bằng phiên bản API mới.
+---
 
 ## 2. Quy ước chung
 
-- Base URL đề xuất: `/api/v1`.
-- Dữ liệu gửi và nhận dùng JSON, tên thuộc tính `camelCase`, ngày dùng `YYYY-MM-DD`, thời điểm dùng ISO 8601 có múi giờ.
-- Tài nguyên dùng danh từ số nhiều; dùng HTTP method để thể hiện thao tác.
-- Contract API độc lập với framework và cách tổ chức UI; các thay đổi giao diện không tự động làm thay đổi endpoint hoặc cấu trúc dữ liệu.
-- Thay đổi không tương thích ngược với contract hiện tại cần được phát hành dưới phiên bản API mới, ví dụ `/api/v2`.
-- Các danh sách hỗ trợ `page` (mặc định `1`), `limit` (mặc định `20`, tối đa `100`) và tham số tìm kiếm/lọc phù hợp.
-- Endpoint cần đăng nhập nhận `Authorization: Bearer <token>`. Backend kiểm tra quyền theo vai trò, không dựa vào việc ẩn nút trên giao diện.
-- Vai trò: `MANAGER`, `RECEPTIONIST`, `TRAINER`, `MEMBER`.
+- **Base URL:** `/api/v1`
+- **Định dạng dữ liệu:** JSON toàn bộ, tên thuộc tính chuẩn `camelCase`, định dạng ngày `YYYY-MM-DD`, thời điểm (Timestamp) dùng chuẩn ISO 8601 có múi giờ (`YYYY-MM-DDTHH:mm:ssZ`).
+- **Quy ước tài nguyên:** Dùng danh từ số nhiều cho tài nguyên (`/members`, `/classes`), dùng HTTP Method (`GET`, `POST`, `PATCH`, `DELETE`) để thể hiện thao tác.
+- **Phân trang & Lọc:** Các danh sách hỗ trợ tham số `page` (mặc định: 1), `limit` (mặc định: 20, tối đa: 100) và các tham số `search`, `status`, `sort`.
+- **Phân quyền (Roles):** `MANAGER` (Quản lý), `RECEPTIONIST` (Lễ tân), `TRAINER` (HLV), `MEMBER` (Hội viên).
 
-### Định dạng phản hồi
+### Định dạng phản hồi chuẩn
 
-Thành công với một tài nguyên:
+**Thành công (1 tài nguyên):**
 
 ```json
 {
@@ -47,155 +55,169 @@ Thành công với một tài nguyên:
 }
 ```
 
-Thành công với danh sách:
+**Thành công (Danh sách kèm phân trang):**
 
 ```json
 {
   "data": [],
-  "meta": { "page": 1, "limit": 20, "total": 0 }
+  "meta": { "page": 1, "limit": 20, "total": 45 }
 }
 ```
 
-Lỗi thống nhất:
+**Lỗi thống nhất (Error Response):**
 
 ```json
 {
   "error": {
     "code": "CLASS_FULL",
-    "message": "Lớp đã đầy",
-    "details": null
+    "message": "Lớp học đã đạt sức chứa tối đa",
+    "details": [
+      { "field": "classId", "message": "Lớp cls_001 hiện đã có đủ 30/30 hội viên" }
+    ]
   }
 }
 ```
 
-Các mã HTTP chính: `200` thành công, `201` tạo thành công, `204` thành công không có nội dung, `400` dữ liệu không hợp lệ, `401` chưa đăng nhập, `403` không đủ quyền, `404` không tìm thấy, `409` xung đột nghiệp vụ, `500` lỗi hệ thống.
+### Các mã HTTP chính
 
-## 3. Endpoint
+| Mã | Ý nghĩa |
+|----|---------|
+| 200 | OK |
+| 201 | Created |
+| 204 | No Content |
+| 400 | Bad Request |
+| 401 | Unauthorized |
+| 403 | Forbidden |
+| 404 | Not Found |
+| 409 | Conflict |
+| 500 | Internal Server Error |
 
-### 3.1 Tài khoản và xác thực
+---
 
-| Method | Endpoint | Mô tả | Quyền |
-|---|---|---|---|
-| `POST` | `/auth/login` | Đăng nhập, trả token và thông tin vai trò | Công khai |
-| `POST` | `/auth/logout` | Đăng xuất / thu hồi phiên | Đã đăng nhập |
-| `GET` | `/auth/me` | Lấy tài khoản hiện tại | Đã đăng nhập |
-| `GET` | `/users` | Danh sách tài khoản | Quản lý |
-| `POST` | `/users` | Tạo tài khoản, gán vai trò và hồ sơ liên kết | Quản lý |
-| `PATCH` | `/users/{userId}` | Cập nhật vai trò hoặc khóa/mở tài khoản | Quản lý |
+## 3. Danh sách Endpoint chi tiết
 
-Mật khẩu chỉ được gửi khi tạo/đặt lại và phải được backend băm trước khi lưu. Không bao giờ trả `passwordHash` trong response.
+### 3.1. Tài khoản và Xác thực
 
-### 3.2 Hội viên, gói dịch vụ, HLV và phòng tập
+| Method | Endpoint | Mô tả | Quyền hạn |
+|--------|----------|-------|-----------|
+| POST | `/auth/login` | Đăng nhập hệ thống, trả về Bearer Token & thông tin user | Công khai |
+| POST | `/auth/logout` | Đăng xuất, hủy phiên làm việc hiện tại | Đã đăng nhập |
+| GET | `/auth/me` | Lấy thông tin tài khoản đang đăng nhập | Đã đăng nhập |
+| GET | `/users` | Lấy danh sách tài khoản (hỗ trợ lọc theo `role`, `status`) | MANAGER |
+| POST | `/users` | Tạo tài khoản mới (gắn kèm vai trò và hồ sơ liên kết) | MANAGER |
+| PATCH | `/users/{userId}` | Cập nhật vai trò hoặc khóa/mở khóa tài khoản | MANAGER |
 
-| Method | Endpoint | Mô tả | Quyền |
-|---|---|---|---|
-| `GET` | `/members` | Tìm theo tên, số điện thoại, mã; lọc trạng thái | Quản lý, Lễ tân |
-| `POST` | `/members` | Tạo hội viên | Quản lý, Lễ tân |
-| `GET` | `/members/{memberId}` | Xem hồ sơ hội viên | Quản lý, Lễ tân; Hội viên xem hồ sơ mình |
-| `PATCH` | `/members/{memberId}` | Cập nhật hồ sơ/trạng thái; không xóa vật lý | Quản lý, Lễ tân |
-| `GET` | `/packages` | Danh sách gói đang cung cấp hoặc toàn bộ | Đã đăng nhập |
-| `POST` | `/packages` | Tạo gói | Quản lý |
-| `GET` | `/packages/{packageId}` | Chi tiết gói | Đã đăng nhập |
-| `PATCH` | `/packages/{packageId}` | Cập nhật thông tin hoặc ngừng cung cấp | Quản lý |
-| `GET` | `/trainers` | Danh sách HLV | Đã đăng nhập |
-| `POST` | `/trainers` | Tạo HLV | Quản lý |
-| `GET` | `/trainers/{trainerId}` | Chi tiết HLV | Đã đăng nhập |
-| `PATCH` | `/trainers/{trainerId}` | Cập nhật HLV/trạng thái | Quản lý |
-| `GET` | `/rooms` | Danh sách phòng tập | Quản lý, Lễ tân |
-| `POST` | `/rooms` | Tạo phòng tập | Quản lý |
-| `PATCH` | `/rooms/{roomId}` | Cập nhật phòng | Quản lý |
+**Ví dụ Request Body tạo hội viên/tài khoản (`POST /users`):**
 
-Gợi ý lọc: `GET /members?search=0900&status=ACTIVE&page=1&limit=20`; `GET /packages?status=AVAILABLE`.
-
-### 3.3 Đăng ký và vòng đời gói hội viên
-
-| Method | Endpoint | Mô tả | Quyền |
-|---|---|---|---|
-| `GET` | `/memberships` | Tìm/lọc đăng ký gói theo hội viên, trạng thái, thời hạn | Quản lý, Lễ tân |
-| `POST` | `/memberships` | Đăng ký gói cho hội viên | Quản lý, Lễ tân |
-| `GET` | `/memberships/{membershipId}` | Xem một đăng ký gói | Quản lý, Lễ tân; Hội viên xem gói mình |
-| `POST` | `/memberships/{membershipId}/renewals` | Gia hạn và ghi lịch sử gia hạn | Quản lý, Lễ tân |
-| `POST` | `/memberships/{membershipId}/suspensions` | Tạm ngưng, ghi lý do và lịch sử | Quản lý, Lễ tân |
-| `POST` | `/memberships/{membershipId}/reactivations` | Kích hoạt lại, tính ngày được bù theo SRS | Quản lý, Lễ tân |
-| `GET` | `/members/{memberId}/membership-history` | Lịch sử đăng ký, gia hạn và tạm ngưng | Quản lý, Lễ tân; Hội viên xem của mình |
-
-Ví dụ đăng ký gói:
-
-```http
-POST /api/v1/memberships
-Content-Type: application/json
+```json
+{
+  "username": "nguyenvana",
+  "password": "SecurePassword123@",
+  "role": "MEMBER",
+  "fullName": "Nguyen Van A",
+  "phone": "0900000000",
+  "email": "vana@example.com"
+}
 ```
+
+### 3.2. Hội viên, Gói dịch vụ, HLV và Phòng tập
+
+| Method | Endpoint | Mô tả | Quyền hạn |
+|--------|----------|-------|-----------|
+| GET | `/members` | Tìm kiếm hội viên theo tên, SĐT, mã; lọc theo trạng thái | MANAGER, RECEPTIONIST |
+| POST | `/members` | Tạo mới hồ sơ hội viên | MANAGER, RECEPTIONIST |
+| GET | `/members/{memberId}` | Xem chi tiết hồ sơ hội viên | MANAGER, RECEPTIONIST, MEMBER (chính chủ) |
+| PATCH | `/members/{memberId}` | Cập nhật thông tin/trạng thái hội viên | MANAGER, RECEPTIONIST |
+| GET | `/packages` | Lấy danh sách gói dịch vụ (Membership Packages) | Đã đăng nhập |
+| POST | `/packages` | Tạo gói dịch vụ mới | MANAGER |
+| GET | `/packages/{packageId}` | Xem chi tiết gói dịch vụ | Đã đăng nhập |
+| PATCH | `/packages/{packageId}` | Cập nhật thông tin hoặc ngừng cung cấp gói | MANAGER |
+| GET | `/trainers` | Danh sách huấn luyện viên | Đã đăng nhập |
+| POST | `/trainers` | Thêm thông tin HLV mới | MANAGER |
+| GET | `/trainers/{trainerId}` | Chi tiết HLV | Đã đăng nhập |
+| PATCH | `/trainers/{trainerId}` | Cập nhật thông tin/trạng thái HLV | MANAGER |
+| GET | `/rooms` | Danh sách phòng tập trong cơ sở | MANAGER, RECEPTIONIST |
+| POST | `/rooms` | Thêm phòng tập mới | MANAGER |
+| PATCH | `/rooms/{roomId}` | Cập nhật thông tin phòng tập | MANAGER |
+
+### 3.3. Đăng ký, Vòng đời gói hội viên & Thanh toán
+
+| Method | Endpoint | Mô tả | Quyền hạn |
+|--------|----------|-------|-----------|
+| GET | `/memberships` | Tra cứu danh sách đăng ký gói theo hội viên, trạng thái | MANAGER, RECEPTIONIST |
+| POST | `/memberships` | Đăng ký gói tập mới cho hội viên kèm tạo hóa đơn thanh toán | MANAGER, RECEPTIONIST |
+| GET | `/memberships/{membershipId}` | Xem chi tiết một gói đăng ký | MANAGER, RECEPTIONIST, MEMBER (chính chủ) |
+| POST | `/memberships/{membershipId}/renewals` | Gia hạn gói dịch vụ | MANAGER, RECEPTIONIST |
+| POST | `/memberships/{membershipId}/suspensions` | Tạm ngưng gói (ghi nhận lý do và lịch sử) | MANAGER, RECEPTIONIST |
+| POST | `/memberships/{membershipId}/reactivations` | Kích hoạt lại gói (tính bù ngày theo SRS) | MANAGER, RECEPTIONIST |
+| GET | `/members/{memberId}/membership-history` | Xem toàn bộ lịch sử đăng ký, gia hạn, tạm ngưng | MANAGER, RECEPTIONIST, MEMBER (chính chủ) |
+
+**Quy tắc nghiệp vụ Đăng ký (`POST /memberships`):**
+
+- Client gửi lên:
+
+  ```json
+  { "memberId": "mem_001", "packageId": "pkg_001", "paymentMethod": "CASH" }
+  ```
+
+- Backend tự lấy ngày hiện tại (múi giờ VN), chụp lại giá gốc tại thời điểm mua, tính `endDate = startDate + durationDays - 1`, kiểm tra hội viên không có gói nào đang `ACTIVE`/`SUSPENDED` trùng lặp, sau đó tạo hóa đơn (`invoices`) đi kèm **trong cùng một Transaction**.
+
+### 3.4. Lớp tập, Đăng ký lớp & Check-in (Điểm danh) ⭐ *(Bổ sung mới)*
+
+| Method | Endpoint | Mô tả | Quyền hạn |
+|--------|----------|-------|-----------|
+| GET | `/classes` | Lịch lớp (thông tin HLV, phòng, sức chứa, số chỗ còn) | Đã đăng nhập |
+| POST | `/classes` | Tạo lịch lớp tập mới | MANAGER, RECEPTIONIST (nếu được phân quyền) |
+| GET | `/classes/{classId}` | Chi tiết một lớp học cụ thể | Đã đăng nhập |
+| PATCH | `/classes/{classId}` | Cập nhật lịch, HLV, phòng, trạng thái lớp | MANAGER, RECEPTIONIST |
+| GET | `/classes/{classId}/registrations` | Danh sách hội viên đã đăng ký lớp | MANAGER, RECEPTIONIST, TRAINER (phụ trách) |
+| GET | `/class-registrations` | Tra cứu lịch sử đăng ký lớp của hội viên | MANAGER, RECEPTIONIST, MEMBER |
+| POST | `/class-registrations` | Đăng ký vào lớp (cho bản thân hoặc thay mặt hội viên) | MEMBER, MANAGER, RECEPTIONIST |
+| POST | `/class-registrations/{registrationId}/cancellations` | Hủy đăng ký lớp (lưu vết thời gian hủy) | MEMBER (sở hữu), MANAGER, RECEPTIONIST |
+| POST | `/check-ins` | Quét mã điểm danh hội viên vào phòng tập hoặc lớp học | RECEPTIONIST, MANAGER |
+| GET | `/check-ins` | Tra cứu lịch sử ra vào / check-in của phòng tập | MANAGER, RECEPTIONIST |
+
+**Chi tiết Payload Check-in (`POST /check-ins`):**
 
 ```json
 {
   "memberId": "mem_001",
-  "packageId": "pkg_001"
+  "type": "GYM_ACCESS" // hoặc "CLASS_CHECKIN", kèm classId nếu có
 }
 ```
 
-Backend lấy ngày hiện tại theo múi giờ Việt Nam, chụp giá gói tại thời điểm đăng ký, tính `endDate = startDate + durationDays - 1`, rồi kiểm tra hội viên chưa có gói hiệu lực/tạm ngưng. Không nhận `status`, `price` hoặc `endDate` từ client làm dữ liệu quyết định.
+**Backend kiểm tra:** Hội viên tồn tại, trạng thái gói tập (membership) đang `ACTIVE` và chưa hết hạn → trả về `201 Created` kèm thông tin chào mừng; ngược lại trả về lỗi `409 MEMBERSHIP_EXPIRED`.
 
-Ví dụ gia hạn:
+### 3.5. Báo cáo & Thống kê
 
-```http
-POST /api/v1/memberships/ms_001/renewals
-Content-Type: application/json
-```
+| Method | Endpoint | Mô tả | Quyền hạn |
+|--------|----------|-------|-----------|
+| GET | `/reports/overview` | Thống kê tổng quan (số hội viên active, số lớp trong ngày) | MANAGER, RECEPTIONIST |
+| GET | `/reports/memberships` | Thống kê số lượng đăng ký gói theo loại/trạng thái | MANAGER, RECEPTIONIST |
+| GET | `/reports/classes` | Thống kê tình trạng lớp học (số lượng đăng ký, lớp đầy) | MANAGER, RECEPTIONIST |
+| GET | `/reports/revenue` | **[Bổ sung]** Thống kê doanh thu theo ngày/tháng/gói dịch vụ | MANAGER |
 
-```json
-{ "packageId": "pkg_001" }
-```
+---
 
-Gói đang hiệu lực được nối tiếp từ ngày kết thúc hiện tại; gói hết hạn được tính từ ngày gia hạn. Từ chối gói tạm ngưng hoặc gói đã ngừng cung cấp.
+## 4. Bảng mã lỗi nghiệp vụ chuẩn hóa (Error Codes)
 
-### 3.4 Lớp tập và đăng ký lớp
+| HTTP Status | `error.code` | Ý nghĩa chi tiết |
+|-------------|--------------|------------------|
+| 400 | `VALIDATION_ERROR` | Dữ liệu đầu vào không đúng định dạng / thiếu trường bắt buộc |
+| 401 | `UNAUTHORIZED` | Token không hợp lệ hoặc đã hết hạn |
+| 403 | `FORBIDDEN` | Tài khoản không đủ quyền thực hiện hành động này |
+| 404 | `MEMBER_NOT_FOUND` | Không tìm thấy hội viên hoặc hội viên ở trạng thái khóa |
+| 404 | `CLASS_NOT_FOUND` | Lớp học không tồn tại trong hệ thống |
+| 409 | `MEMBERSHIP_REQUIRED` | Hội viên chưa mua gói tập hoặc gói tập không hiệu lực |
+| 409 | `MEMBERSHIP_SUSPENDED` | Gói tập hiện đang trong trạng thái tạm ngưng |
+| 409 | `MEMBERSHIP_EXPIRED` | Gói tập của hội viên đã hết hạn sử dụng |
+| 409 | `DUPLICATE_REGISTRATION` | Hội viên đã đăng ký lớp học này từ trước |
+| 409 | `CLASS_FULL` | Lớp học đã đạt sức chứa tối đa, không thể nhận thêm |
 
-| Method | Endpoint | Mô tả | Quyền |
-|---|---|---|---|
-| `GET` | `/classes` | Lịch lớp; gồm HLV, phòng, sức chứa, số đã đăng ký và số chỗ còn | Đã đăng nhập |
-| `POST` | `/classes` | Tạo lớp | Quản lý; Lễ tân nếu được cấp quyền |
-| `GET` | `/classes/{classId}` | Chi tiết lớp | Đã đăng nhập |
-| `PATCH` | `/classes/{classId}` | Cập nhật lịch, HLV, phòng, sức chứa hoặc trạng thái | Quản lý; Lễ tân nếu được cấp quyền |
-| `GET` | `/classes/{classId}/registrations` | Danh sách hội viên đăng ký lớp | Quản lý, Lễ tân, HLV phụ trách |
-| `GET` | `/class-registrations` | Tra cứu đăng ký theo hội viên/lớp/trạng thái | Quản lý, Lễ tân; Hội viên xem của mình |
-| `POST` | `/class-registrations` | Đăng ký lớp cho mình hoặc thay mặt hội viên | Hội viên; Quản lý, Lễ tân |
-| `POST` | `/class-registrations/{registrationId}/cancellations` | Hủy đăng ký, lưu thời điểm và nhật ký | Hội viên sở hữu; Quản lý, Lễ tân |
+---
 
-Lọc lịch: `GET /classes?status=OPEN&dayOfWeek=1&page=1&limit=20`. Số chỗ còn lại được tính từ số đăng ký `ACTIVE`, không nhận hoặc lưu giá trị này từ client.
+## 5. Các điểm ghi chú kỹ thuật cho việc triển khai (Implementation Notes)
 
-Khi hội viên tự đăng ký, backend lấy `memberId` từ tài khoản đăng nhập; chỉ Quản lý/Lễ tân mới được gửi `memberId` để thao tác thay mặt. Ví dụ:
-
-```json
-{ "classId": "cls_001", "memberId": "mem_001" }
-```
-
-Backend kiểm tra theo thứ tự: hội viên hợp lệ, lớp đang mở, gói hiệu lực và chưa quá hạn, chưa đăng ký trùng, còn sức chứa. Kiểm tra sức chứa, tạo đăng ký và ghi audit log phải nằm trong một transaction; khóa lớp hoặc dùng cơ chế tương đương để ngăn đăng ký đồng thời vượt chỗ.
-
-### 3.5 Báo cáo
-
-| Method | Endpoint | Mô tả | Quyền |
-|---|---|---|---|
-| `GET` | `/reports/overview` | Tổng quan hội viên, gói và lớp | Quản lý; Lễ tân nếu được cấp quyền |
-| `GET` | `/reports/memberships` | Thống kê hội viên theo gói/trạng thái | Quản lý; Lễ tân nếu được cấp quyền |
-| `GET` | `/reports/classes` | Số đăng ký, sức chứa, lớp còn chỗ/đã đầy | Quản lý; Lễ tân nếu được cấp quyền |
-
-## 4. Mã lỗi nghiệp vụ
-
-| HTTP | `error.code` | Ý nghĩa |
-|---|---|---|
-| `404` | `MEMBER_NOT_FOUND` | Hội viên không tồn tại hoặc không hoạt động (E1) |
-| `404` / `409` | `CLASS_NOT_OPEN` | Lớp không tồn tại hoặc không mở đăng ký (E2) |
-| `409` | `MEMBERSHIP_REQUIRED` | Hội viên chưa từng đăng ký gói (E3) |
-| `409` | `MEMBERSHIP_SUSPENDED` | Gói đang tạm ngưng (E4a) |
-| `409` | `MEMBERSHIP_EXPIRED` | Gói đã hết hạn (E4b) |
-| `409` | `DUPLICATE_REGISTRATION` | Đã đăng ký lớp này (E5) |
-| `409` | `CLASS_FULL` | Lớp đã đầy (E6) |
-| `403` | `FORBIDDEN` | Vai trò không được phép thực hiện thao tác |
-| `400` | `VALIDATION_ERROR` | Thiếu/sai dữ liệu đầu vào |
-
-## 5. Các điểm cần xác nhận
-
-- SRS chưa chốt công nghệ backend/database và cơ chế token; Bearer token ở trên là đề xuất cho hợp đồng API.
-- Cần xác nhận HLV/Lễ tân có được tạo hoặc cập nhật lớp không; quyền này đang được ghi là có điều kiện.
-- Cần xác nhận chính sách thời hạn hủy đăng ký lớp.
-- SRS mô tả trạng thái gói vừa được tính theo ngày vừa được tiến trình cập nhật; khi triển khai cần thống nhất trạng thái lưu hay trạng thái suy ra để tránh dữ liệu lệch.
+- **Quản lý trạng thái Gói (Membership Status):** Trạng thái `ACTIVE` hay `EXPIRED` của gói tập nên được xử lý tự động bằng Cron Job chạy ngầm hàng ngày trên Database (so sánh `endDate` với ngày hiện tại) kết hợp cờ trạng thái `isSuspended` để tránh lệch dữ liệu.
+- **Concurrency Control (Tranh chấp chỗ lớp học):** Khi nhiều hội viên đăng ký 1 lớp cùng thời điểm (gần đầy chỗ), Backend phải sử dụng cơ chế Database Transaction kèm khóa dòng (`SELECT ... FOR UPDATE`) đối với bảng `classes` để tránh vượt quá `capacity`.
+- **Check-in tự động:** Thiết kế endpoint `/check-ins` sẵn sàng cho việc tích hợp máy quét mã QR Code trên thẻ hội viên hoặc app mobile sau này.
