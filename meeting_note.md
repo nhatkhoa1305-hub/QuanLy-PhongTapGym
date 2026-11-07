@@ -250,10 +250,10 @@
 ## Phạm Đình Kiên
 
 + Task completed:
-  - NONE
+  - Bổ sung api design
     
 + Working:
-  - NONE
+  - Bổ sung, trình bày code mới
 
 + Roadblocks:
   - NONE
