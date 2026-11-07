@@ -230,3 +230,35 @@
   - NONE
 
 ---
+
+# 7/11/2026
+
+## Bách Nhật Khoa
+
++ Task completed:
+  - NONE
+
++ Working:
+  - Sữa lại file
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - NONE
+
+## Phạm Đình Kiên
+
++ Task completed:
+  - NONE
+    
++ Working:
+  - NONE
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - NONE
+
+---
