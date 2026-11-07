@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gym Management Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand-box">
+          <div class="brand-logo">G</div>
+          <div>
+            <p class="brand-label">GYM</p>
+            <h1>CoreFit</h1>
+          </div>
+        </div>
+
+        <nav class="nav-menu">
+          <button class="nav-item active" data-view="dashboard">Tổng quan</button>
+          <button class="nav-item" data-view="members">Hội viên</button>
+          <button class="nav-item" data-view="packages">Gói dịch vụ</button>
+          <button class="nav-item" data-view="subscriptions">Gói hội viên</button>
+          <button class="nav-item" data-view="classes">Lớp tập</button>
+          <button class="nav-item" data-view="trainers">Huấn luyện viên</button>
+          <button class="nav-item" data-view="registrations">Đăng ký lớp</button>
+          <button class="nav-item" data-view="history">Lịch sử hội viên</button>
+          <button class="nav-item" data-view="reports">Báo cáo</button>
+          <button class="nav-item" data-view="users">Phân quyền</button>
+        </nav>
+
+        <div class="sidebar-card">
+          <p class="mini-label">Trạng thái hệ thống</p>
+          <div class="status-row">
+            <span class="status-dot online"></span>
+            <span>Online</span>
+          </div>
+          <small>Hệ thống hoạt động ổn định</small>
+        </div>
+      </aside>
+
+      <main class="content">
+        <header class="topbar" id="topbar"></header>
+        <section id="appView" aria-live="polite"></section>
+      </main>
+    </div>
+
+    <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
