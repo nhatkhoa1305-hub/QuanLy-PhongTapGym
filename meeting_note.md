@@ -262,3 +262,35 @@
   - NONE
 
 ---
+
+# 14/11/2026
+
+## Bách Nhật Khoa
+
++ Task completed:
+  - NONE
+
++ Working:
+  - Tìm hiểu và làm docker
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - NONE
+
+## Phạm Đình Kiên
+
++ Task completed:
+  - NONE
+    
++ Working:
+  - Tìm hiểu docker
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - NONE
+
+---
