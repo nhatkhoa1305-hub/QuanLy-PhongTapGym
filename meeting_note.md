@@ -323,3 +323,35 @@
   - NONE
 
 ---
+
+# 28/11/2026
+
+## Bách Nhật Khoa
+
++ Task completed:
+  - NONE
+
++ Working:
+  - Tiếp tục hoàn thiện docker
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - NONE
+
+## Phạm Đình Kiên
+
++ Task completed:
+  - NONE
+    
++ Working:
+  - nghiên cứu kết nối database lên aiven
+
++ Roadblocks:
+  - NONE
+
++ Plan for next day:
+  - NONE
+
+---
